@@ -60,40 +60,48 @@ export default function AccountsPage() {
 
   return (
     <SidebarLayout>
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Your Accounts</h1>
+    <div className="container my-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h4 fw-bold mb-0">Your Accounts</h1>
+        <button
+          className="btn btn-primary"
+          onClick={() => router.push('/accounts/add')}
+        >
+          Create New Account
+        </button>
+      </div>
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      {error && <div className="alert alert-danger">{error}</div>}
 
       {accounts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="row g-4">
           {accounts.map((account) => (
-            <div
-              key={account.id}
-              className="p-4 border rounded-lg shadow bg-white flex justify-between items-center"
-            >
-              <div>
-                <h2 className="text-lg font-semibold">{account.name}</h2>
-                <p className="text-sm text-gray-600 capitalize">{account.type}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-xl font-bold text-green-700">₹{account.balance}</p>
-              </div>
-              <div className="text-right">
-                <button
-                  onClick={() => deleteAccount(account.id)}
-                  className="text-red-600 hover:text-red-800"
-                >
-                  Delete
-                </button>
+            <div className="col-12 col-sm-6" key={account.id}>
+              <div className="card h-100 shadow-sm">
+                <div className="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 className="card-title mb-1">{account.name}</h5>
+                    <p className="card-subtitle text-muted text-capitalize">{account.type}</p>
+                  </div>
+                  <div className="text-end">
+                    <p className="fw-bold text-success mb-1">₹{account.balance}</p>
+                    <button
+                      onClick={() => deleteAccount(account.id)}
+                      className="btn btn-sm btn-outline-danger"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-gray-600">No accounts found.</p>
+        <p className="text-muted mt-3">No accounts found.</p>
       )}
     </div>
+
     </SidebarLayout>
   );
 }

@@ -7,6 +7,9 @@ import SidebarLayout from '@/components/SidebarLayout';
 export default function TransactionPage() {
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(5); // default items per page
   const router = useRouter();
   const fetchTransactions = async () => {
       const token = localStorage.getItem('token');
@@ -16,7 +19,7 @@ export default function TransactionPage() {
       }
 
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions?page=${page}&limit=${limit}`, {
           headers: {
             Authorization: `${token}`,
           },
@@ -25,7 +28,8 @@ export default function TransactionPage() {
         const data = await res.json();
 
         if (res.ok) {
-          setTransactions(data);
+          setTransactions(data.transactions || []);
+          setTotalPages(Math.ceil(data.total / limit));
         } else {
           setError(data.error || 'Failed to fetch transactions');
         }
@@ -59,55 +63,101 @@ export default function TransactionPage() {
     }
   };
   useEffect(() => {
-    
-
     fetchTransactions();
-  }, [router]);
+  }, [router, page, limit]);
 
   return (
     <SidebarLayout>
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Your Transactions</h1>
+    <div className="container py-4">
+      <div className="row justify-content-center">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h4 fw-bold mb-0">Your Transactions</h1>
+        <button
+          className="btn btn-primary"
+          onClick={() => router.push('/transactions/add')}
+        >
+          Add New Transaction
+        </button>
+      </div>
+      </div>
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      {error && <div className="alert alert-danger mb-3">{error}</div>}
 
       {transactions.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="text-left p-2 border-b">Date</th>
-                <th className="text-left p-2 border-b">Type</th>
-                <th className="text-left p-2 border-b">Account</th>
-                <th className="text-left p-2 border-b">Amount</th>
-                <th className="text-left p-2 border-b">Description</th>
-                <th className="text-left p-2 border-b">Action</th>
+        <div className="table-responsive">
+          <table className="table table-bordered align-middle">
+            <thead className="table-light">
+              <tr>
+                <th>Type</th>
+                <th>Account</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {transactions.map((txn) => (
-                <tr key={txn.id} className="hover:bg-gray-50">
-                  <td className="p-2 border-b">{txn.txn_datetime}</td>
-                  <td className="p-2 border-b capitalize">{txn.type}</td>
-                  <td className="p-2 border-b">{txn.account_id}</td>
-                  <td
-                    className={`p-2 border-b ${
-                      txn.type === 'credit' ? 'text-green-700' : 'text-red-700'
-                    }`}
-                  >
+                <tr key={txn.id}>
+                  <td className="text-capitalize">{txn.type}</td>
+                  <td>{txn.account_name}</td>
+                  <td className={txn.type === 'credit' ? 'text-success' : 'text-danger'}>
                     ₹{txn.amount}
                   </td>
-                  <td className="p-2 border-b">{txn.description || '-'}</td>
-                  <td><button onClick={() => {deleteTransaction(txn.id)}}> DELETE TXN </button></td>
+                  <td>{txn.description || '-'}</td>
+                  <td>{txn.txn_datetime}</td>
+                  <td>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => deleteTransaction(txn.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+          {/* Limit selector */}
+          <div>
+            <label className="me-2">Items per page:</label>
+            <select
+              className="form-select d-inline-block w-auto"
+              value={limit}
+              onChange={(e) => {
+                setPage(1);
+                setLimit(Number(e.target.value));
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+            </select>
+          </div>
+
+          {/* Page selector */}
+          <nav>
+            <ul className="pagination mb-0">
+              {[...Array(totalPages)].map((_, i) => (
+                <li
+                  key={i + 1}
+                  className={`page-item ${page === i + 1 ? 'active' : ''}`}
+                >
+                  <button className="page-link" onClick={() => setPage(i + 1)}>
+                    {i + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
         </div>
       ) : (
         <p>No transactions found.</p>
       )}
     </div>
+
     </SidebarLayout>
   );
 }

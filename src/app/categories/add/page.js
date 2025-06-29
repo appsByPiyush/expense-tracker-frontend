@@ -75,33 +75,42 @@ export default function CategoriesPage() {
 
   return (
     <SidebarLayout>
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Categories</h1>
+    <div className="container my-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h4 fw-bold mb-0">Add New Category</h1>
+        <button
+          className="btn btn-primary"
+          onClick={() => router.push('/categories')}
+        >
+          List All Categories
+        </button>
+      </div>
 
-      {error && <p className="text-red-600 mb-3">{error}</p>}
-      {success && <p className="text-green-600 mb-3">{success}</p>}
+      {error && <div className="alert alert-danger mb-3">{error}</div>}
+      {success && <div className="alert alert-success mb-3">{success}</div>}
 
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded shadow mb-6">
-        <div>
-          <label className="block font-medium mb-1">Category Name</label>
+      <form onSubmit={handleSubmit} className="card card-body shadow-sm mb-4">
+        <div className="mb-3">
+          <label className="form-label">Category Name</label>
           <input
             type="text"
             name="name"
             value={form.name}
             onChange={handleChange}
             required
-            className="w-full border p-2 rounded"
+            className="form-control"
+            placeholder="Enter category name"
           />
         </div>
 
-        <div>
-          <label className="block font-medium mb-1">Type</label>
+        <div className="mb-3">
+          <label className="form-label">Type</label>
           <select
             name="type"
             value={form.type}
             onChange={handleChange}
             required
-            className="w-full border p-2 rounded"
+            className="form-select"
           >
             <option value="">Select type</option>
             <option value="credit">Income</option>
@@ -110,56 +119,10 @@ export default function CategoriesPage() {
           </select>
         </div>
 
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <button type="submit" className="btn btn-primary">
           Add Category
         </button>
       </form>
-
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Filter by Type</label>
-        <select
-          className="w-full border p-2 rounded"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="">All</option>
-          <option value="in">Income</option>
-          <option value="ex">Expense</option>
-          <option value="tr">Transfer</option>
-        </select>
-      </div>
-
-      {/* <div className="bg-white shadow rounded">
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-gray-100 text-left">
-              <th className="p-3">Name</th>
-              <th className="p-3">Type</th>
-              <th className="p-3">Created At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCategories.map((cat) => (
-              <tr key={cat.id} className="border-t">
-                <td className="p-3">{cat.name}</td>
-                <td className="p-3 capitalize">
-                  {cat.type === 'in' ? 'Income' : cat.type === 'ex' ? 'Expense' : 'Transfer'}
-                </td>
-                <td className="p-3 text-sm text-gray-500">
-                  {new Date(cat.created_at).toLocaleString()}
-                </td>
-              </tr>
-            ))}
-            {filteredCategories.length === 0 && (
-              <tr>
-                <td className="p-3" colSpan={3}>
-                  No categories found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div> */}
     </div>
     </SidebarLayout>
   );

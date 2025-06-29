@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -34,37 +35,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow w-full max-w-sm">
-        <h2 className="text-2xl font-semibold mb-4">Login</h2>
+    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <form onSubmit={handleLogin} className="bg-white p-4 rounded shadow-sm w-100" style={{ maxWidth: '400px' }}>
+      <h2 className="h4 mb-4 text-center">Login</h2>
 
-        {error && <p className="text-red-600 mb-4">{error}</p>}
+      {error && <div className="alert alert-danger">{error}</div>}
 
+      <div className="mb-3">
         <input
           type="email"
+          className="form-control"
           placeholder="Email"
-          className="w-full border p-2 mb-3 rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-
+      </div>
+      <div className="mb-4">
         <input
           type="password"
+          className="form-control"
           placeholder="Password"
-          className="w-full border p-2 mb-4 rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+      </div>
+      <button type="submit" className="mb-2 btn btn-primary w-100">
+        Login
+      </button>
+    </form>
+  </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-        >
-          Login
-        </button>
-      </form>
-    </div>
   );
 }

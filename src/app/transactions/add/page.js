@@ -95,21 +95,32 @@ export default function RecordTransactionPage() {
 
   return (
     <SidebarLayout>
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Record Transaction</h1>
+    <div className="container py-4" style={{ maxWidth: '720px' }}>
+      <div className="row justify-content-center">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h4 fw-bold mb-0">Add Your Transactions</h1>
+        <button
+          className="btn btn-primary"
+          onClick={() => router.push('/transactions')}
+        >
+          List All Transaction
+        </button>
+      </div>
+      </div>
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
-      {success && <p className="text-green-600 mb-4">{success}</p>}
+      {error && <div className="alert alert-danger">{error}</div>}
+      {success && <div className="alert alert-success">{success}</div>}
 
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded shadow">
+      <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow-sm border">
 
-        <div>
-          <label className="block mb-1 font-medium">Transaction Type</label>
+        {/* Transaction Type */}
+        <div className="mb-3">
+          <label className="form-label">Transaction Type</label>
           <select
             name="type"
             value={form.type}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="form-select"
           >
             <option value="credit">Credit</option>
             <option value="debit">Debit</option>
@@ -117,53 +128,58 @@ export default function RecordTransactionPage() {
           </select>
         </div>
 
-        <div>
-            <label className="block mb-1 font-medium">
-                From Account {form.type === 'transfer' ? '(Transfer From)' : ''}
-            </label>
-            <select
-                name="account_id"
-                value={form.account_id}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-                required
-            >
-                <option value="">Select account</option>
-                {accounts.map((a) => (
-                <option key={a.id} value={a.id}>
-                    {a.name} ({a.type}) - ₹{a.balance}
-                </option>
-                ))}
-            </select>
-        </div>
-        {form.type === 'transfer' && (
-        <div>
-            <label className="block mb-1 font-medium">To Account (Transfer To)</label>
-            <select
-            name="to_account_id"
-            value={form.to_account_id}
+        {/* From Account */}
+        <div className="mb-3">
+          <label className="form-label">
+            From Account {form.type === 'transfer' ? '(Transfer From)' : ''}
+          </label>
+          <select
+            name="account_id"
+            value={form.account_id}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="form-select"
             required
-            >
+          >
             <option value="">Select account</option>
-            {accounts
+            {accounts.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name} ({a.type}) - ₹{a.balance}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* To Account (if transfer) */}
+        {form.type === 'transfer' && (
+          <div className="mb-3">
+            <label className="form-label">To Account (Transfer To)</label>
+            <select
+              name="to_account_id"
+              value={form.to_account_id}
+              onChange={handleChange}
+              className="form-select"
+              required
+            >
+              <option value="">Select account</option>
+              {accounts
                 .filter((a) => a.id.toString() !== form.account_id)
                 .map((a) => (
-                <option key={a.id} value={a.id}>
+                  <option key={a.id} value={a.id}>
                     {a.name} ({a.type}) - ₹{a.balance}
-                </option>
+                  </option>
                 ))}
             </select>
-        </div>
+          </div>
         )}
-        <div>
-          <label className="block mb-1 font-medium">Category (optional)</label>
+
+        {/* Category */}
+        <div className="mb-3">
+          <label className="form-label">Category (optional)</label>
           <select
             name="category_id"
             value={form.category_id}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="form-select"
           >
             <option value="">None</option>
             {categories
@@ -176,63 +192,64 @@ export default function RecordTransactionPage() {
           </select>
         </div>
 
-        <div>
-          <label className="block mb-1 font-medium">Amount (₹)</label>
+        {/* Amount */}
+        <div className="mb-3">
+          <label className="form-label">Amount (₹)</label>
           <input
             type="number"
             name="amount"
             value={form.amount}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="form-control"
             required
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-        <div>
-            <label className="block mb-1 font-medium">Transaction Date</label>
+        {/* Date & Time */}
+        <div className="row mb-3">
+          <div className="col-md-6">
+            <label className="form-label">Transaction Date</label>
             <input
-            type="date"
-            name="txn_date"
-            value={form.txn_date}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
+              type="date"
+              name="txn_date"
+              value={form.txn_date}
+              onChange={handleChange}
+              className="form-control"
+              required
             />
+          </div>
+          <div className="col-md-6">
+            <label className="form-label">Transaction Time</label>
+            <input
+              type="time"
+              name="txn_time"
+              value={form.txn_time}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </div>
         </div>
 
-        <div>
-            <label className="block mb-1 font-medium">Transaction Time</label>
-            <input
-            type="time"
-            name="txn_time"
-            value={form.txn_time}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-            />
-        </div>
-        </div>
-
-        <div>
-          <label className="block mb-1 font-medium">Description (optional)</label>
+        {/* Description */}
+        <div className="mb-4">
+          <label className="form-label">Description (optional)</label>
           <input
             type="text"
             name="description"
             value={form.description}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="form-control"
           />
         </div>
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
+        {/* Submit */}
+        <button type="submit" className="btn btn-primary w-100">
           Save Transaction
         </button>
       </form>
     </div>
+
     </SidebarLayout>
   );
 }

@@ -46,76 +46,95 @@ export default function NewAccountPage() {
 
       if (res.ok) {
         setSuccess('Account created successfully!');
+        setTimeout(() => setSuccess(''), 5000);
         setForm({ name: '', type: '', balance: '' });
         // optionally: router.push('/accounts');
       } else {
         setError(data.error || 'Failed to create account');
+        setTimeout(() => setError(''), 5000);
       }
     } catch (err) {
       setError('Server error');
+      setTimeout(() => setError(''), 10000);
     }
   };
 
   return (
     <SidebarLayout>
-    <div className="max-w-md mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Create New Account</h1>
-
-      {error && <p className="text-red-600 mb-4">{error}</p>}
-      {success && <p className="text-green-600 mb-4">{success}</p>}
-
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded shadow">
-
-        <div>
-          <label className="block mb-1 font-medium">Account Name</label>
-          <input
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            className="w-full border p-2 rounded"
-            placeholder="e.g. HDFC, Cash, Wallet"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-medium">Account Type</label>
-          <select
-            name="type"
-            value={form.type}
-            onChange={handleChange}
-            required
-            className="w-full border p-2 rounded"
-          >
-            <option value="">Select type</option>
-            <option value="bank">Bank</option>
-            <option value="cash">Cash</option>
-            <option value="credit">Credit Card</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block mb-1 font-medium">Opening Balance (₹)</label>
-          <input
-            type="number"
-            name="balance"
-            value={form.balance}
-            onChange={handleChange}
-            required
-            className="w-full border p-2 rounded"
-            placeholder="e.g. 1000"
-          />
-        </div>
-
+    <div className="container my-5">
+      <div className="row justify-content-center">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h4 fw-bold mb-0">Create New Account</h1>
         <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="btn btn-primary"
+          onClick={() => router.push('/accounts')}
         >
-          Create Account
+          List All Accounts
         </button>
-      </form>
+      </div>
+        <div className="col-md-8">
+          {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">{success}</div>}
+
+          <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow-sm">
+
+            {/* Account Name */}
+            <div className="mb-3">
+              <label htmlFor="name" className="form-label">Account Name</label>
+              <input
+                type="text"
+                className="form-control"
+                id="name"
+                name="name"
+                placeholder="e.g. HDFC, Cash, Wallet"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Account Type */}
+            <div className="mb-3">
+              <label htmlFor="type" className="form-label">Account Type</label>
+              <select
+                className="form-select"
+                id="type"
+                name="type"
+                value={form.type}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select type</option>
+                <option value="bank">Bank</option>
+                <option value="cash">Cash</option>
+                <option value="credit">Credit Card</option>
+              </select>
+            </div>
+
+            {/* Balance */}
+            <div className="mb-4">
+              <label htmlFor="balance" className="form-label">Opening Balance (₹)</label>
+              <input
+                type="number"
+                className="form-control"
+                id="balance"
+                name="balance"
+                placeholder="e.g. 1000"
+                value={form.balance}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary w-100">
+              Create Account
+            </button>
+          </form>
+
+        </div>
+      </div>
     </div>
+
     </SidebarLayout>
   );
 }

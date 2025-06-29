@@ -62,30 +62,42 @@ export default function CategoriesPage() {
   };
 
   const typeLabels = {
-    in: 'Income',
-    ex: 'Expense',
-    tr: 'Transfer',
+    in: 'Credit Categories',
+    ex: 'Debit Categories',
+    tr: 'Transfer Categories',
   };
 
   return (
     <SidebarLayout>
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Your Categories</h1>
+    <div className="container my-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h4 fw-bold mb-0">Your Categories</h1>
+        <button
+          className="btn btn-primary"
+          onClick={() => router.push('/categories/add')}
+        >
+          Add New Category
+        </button>
+      </div>
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      {error && <div className="alert alert-danger">{error}</div>}
 
       {['in', 'ex', 'tr'].map((type) => (
-        <div key={type} className="mb-6">
-          <h2 className="text-lg font-semibold mb-2">{typeLabels[type]}</h2>
+        <div key={type} className="mb-4">
+          <h2 className="h6 fw-semibold mb-3">{typeLabels[type]}</h2>
+
           {grouped[type].length > 0 ? (
-            <ul className="border rounded divide-y">
+            <ul className="list-group">
               {grouped[type].map((cat) => (
-                <li key={cat.id} className="p-3 flex justify-between items-center bg-white hover:bg-gray-50">
+                <li
+                  key={cat.id}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
                   <span>{cat.name}</span>
-                  <span className="text-xs text-gray-500">{new Date(cat.created_at).toLocaleDateString()}</span>
+                  <small className="text-muted">{new Date(cat.created_at).toLocaleDateString()}</small>
                   <button
                     onClick={() => deleteCategory(cat.id)}
-                    className="text-red-600 hover:text-red-800"
+                    className="btn btn-sm btn-outline-danger"
                   >
                     Delete
                   </button>
@@ -93,11 +105,12 @@ export default function CategoriesPage() {
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-gray-500">No {typeLabels[type]} categories found.</p>
+            <p className="text-muted">No {typeLabels[type]} categories found.</p>
           )}
         </div>
       ))}
     </div>
+
     </SidebarLayout>
   );
 }
